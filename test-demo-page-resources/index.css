@@ -1,0 +1,25 @@
+/* Defaults and light mode */
+
+body {
+	margin: auto;
+	padding: 0.5em;
+	padding-top: 0;
+	width: 45em;
+	max-width: calc(100% - 1em);
+	line-height: 1.2;
+}
+
+#caveat { color: #e00; }
+
+
+/* Dark mode changes */
+
+body.user-prefers-theme-dark {
+	background: #333;
+	color: #eee;
+}
+
+.user-prefers-theme-dark a { color: yellow; }
+.user-prefers-theme-dark a:visited { color: #7fff7f; }
+.user-prefers-theme-dark legend { color: white; }  /* for IE */
+.user-prefers-theme-dark #caveat { color: #f77; }

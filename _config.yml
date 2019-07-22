@@ -1,0 +1,13 @@
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - LICENCE
+  - node_modules
+  - package.json
+  - package-lock.json
+  - README.md
+
+# GitHub defaults
+highlighter: rouge
+safe: true
+lsi: false

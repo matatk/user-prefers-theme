@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>user-prefers-theme</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="test-demo-page-resources/index.css">
+		<script defer src="user-prefers-theme.js"></script>
+		<script defer src="test-demo-page-resources/tests.js"></script>
+		<script defer src="test-demo-page-resources/index.js"></script>
+	</head>
+	<body>
+		<h1>user-prefers-theme</h1>
+
+		<p>This small library manages a class on the <code>&lt;body&gt;</code> element, of the form <code>user-prefers-theme-(light|dark)</code>. It reflects the user's system theme setting, or their preference for the current origin. A callback can be registered so that you can update a theme UI on your page when either preference is updated.</p>
+
+		<p>How might you use it?</p>
+
+		<ul>
+			<li><p>Simply load the script and it's functionally the same as using the <a href="https://css-tricks.com/dark-modes-with-css/"><code>prefers-color-scheme</code> media query</a> (the class on <code>&lt;body&gt;</code> will reflect changes to the system setting).</p></li>
+			<li><p>Call the API to set your visitor's preferred theme: their preference will be saved and the class on <code>&lt;body&gt;</code> will be updated if need be.</p></li>
+			<li><p>Register a callback so you can update theme-related UI on your page in response to system or visitor preference changes.</p></li>
+		</ul>
+
+		<p>Some design notes&hellip;</p>
+
+		<ul>
+			<li><p>No UI is provided; you're free to devise one that suits.</p></li>
+			<li><p>Light mode is assumed to be the default (the <code>no-preference</code> CSS value is taken to mean light mode).</p></li>
+			<li><p>The user's choice will persist (<code>localStorage</code> is used).</p></li>
+		</ul>
+
+		<p>The API can be found below.</p>
+
+		<h2>Try it out</h2>
+
+		<p>Here's a basic UI. You can manually switch between light and dark mode at system level and then check this page's appearance and the readout below.</p>
+
+		<fieldset>
+			<legend>Demo buttons and current theme</legend>
+
+			<button id="set-light" aria-describedby="current-theme">Use light theme</button>
+			<button id="set-dark" aria-describedby="current-theme">Use dark theme</button>
+			<button id="set-moo" aria-describedby="current-theme">Use moo theme</button>
+			<button id="toggle" aria-describedby="current-theme">Toggle: Use <span id="toggle-theme"></span> theme</button>
+			<button id="neither" aria-describedby="current-theme">Prefer neither theme</button>
+
+			<p id="current-theme" aria-live="polite" aria-atomic="true">Current theme: <span id="preferred-theme"></span></p>
+		</fieldset>
+
+		<h2>Tests</h2>
+
+		<p>Most of the tests are automatic, with several running when this page loads. Some of them might cause a flash in your browser, so they must be instigated manually. Finally, some tests need your help in changing the system theme setting. Test results can be found in the console.</p>
+
+		<fieldset>
+			<legend>Tests that may cause flashes in your browser</legend>
+
+			<p>
+			<button id="auto-tests" aria-describedby="auto-tests-done caveat">Tests that are automatic once instigated</button>
+			<span id="auto-tests-done"></span>
+			</p>
+
+			<p>
+			<button id="manual-tests" aria-describedby="manual-tests-done caveat">Tests that need you to change the system theme</button>
+			<span id="manual-tests-done"></span>
+			</p>
+
+			<p id="caveat"><strong>Note:</strong> the tests could cause flashes in any browser, but I have observed a flash in Internet Explorer only so far.</p>
+		</fieldset>
+
+		<h3>Tested in browsers</h3>
+
+		<ul>
+			<li><p>Internet Explorer 11</p></li>
+			<li><p>Firefox 68 (macOS, Windows)</p></li>
+			<li><p>Chrome 75 (macOS, Windows)</p></li>
+			<li><p>Safari 12 (macOS and iOS)</p></li>
+		</ul>
+
+		<p>Test notes:</p>
+		<ul>
+			<li><p>Only Firefox and Safari reflect the system's theme setting. (<a href="https://caniuse.com/#feat=prefers-color-scheme">Chrome and Edge 76 are expected to support the system theme setting</a>, though.)</p></li>
+			<li><p>The first test requiring user assistance doesn't work in Safari 12 (macOS), nor Firefox 68 on Windows, but it does work in Firefox on macOS, so these are assumed to be problems with Safari and Windows. Outside of the test, the system setting is tracked.</p></li>
+		</ul>
+
+
+		<h2>Usage and API</h2>
+
+		<p>Load <code>user-prefers-theme.js</code> via a <code>script</code> tag&mdash;either in the <code>&lt;head&gt;</code> element with the <code>defer</code> attribute set (recommended, as it allows the script to be downloaded in parallel), or at the end of your document's <code>&lt;body&gt;</code>. It will start managing the class applied to the <code>&lt;body&gt;</code> element.</p>
+
+		<p>The following functions are exported.</p>
+
+		<dl>
+			<dt><code>window.userPrefersThemeListener(callback)</code></dt>
+			<dd>
+			<p>Register a callback that will be passed either the system theme setting, or the user's preference for the current origin.</p>
+			<p>The callback will be called immediately, and whenever the system or user preference changes (the latter takes precedence, as described below). It is passed the string 'light' or 'dark'.</p>
+			<p>Calling this again replaces any previously-registered callback.</p>
+			</dd>
+
+			<dt><code>window.userPrefersTheme('light'|'dark')</code></dt>
+			<dd>
+			<p>Switch to the given theme, and save the user's preference for it (on this origin). The preference is persisted indefinitely, and stops the automatic tracking of the system theme setting.</p>
+			<p>Values other than 'light' or 'dark' will cause an error to be thrown.</p>
+			<p>If the theme requested is the same as the current one, the user's preference will be saved, but the callback won't be run.</p>
+			</dd>
+
+			<dt><code>window.userPrefersThemeNeither()</code></dt>
+			<dd>
+			<p>Used to remove an existing preference for light or dark theme on this origin, and return to tracking the system setting.</p>
+			<p>If the current system setting and previously user-preferred theme differ, then the class on <code>&lt;body&gt;</code> will be updated and the callback run.</p>
+			</dd>
+		</dl>
+
+
+		<h2>Implementation</h2>
+
+		<ul>
+			<li><p>The <code>prefers-color-scheme</code> <a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/addListener">media query is used in an event-driven way, via JavaScript</a>, to detect the system preference, and when it changes.</p></li>
+			<li><p>The user's direct preference is managed and stored using <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage"><code>localStorage</code></a>.</p></li>
+		</ul>
+
+
+		<h2>Development</h2>
+
+		<p><a href="https://github.com/matatk/user-prefers-theme/">user-prefers-theme repository on GitHub</a></p>
+	</body>
+</html>

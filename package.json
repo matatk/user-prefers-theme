@@ -1,0 +1,31 @@
+{
+  "name": "user-prefers-theme",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Reflect or manage light/dark theme settings on your web pages",
+  "keywords": [
+    "color",
+    "colour",
+    "dark",
+    "light",
+    "theme"
+  ],
+  "homepage": "https://github.com/matatk/user-prefers-theme#readme",
+  "bugs": {
+    "url": "https://github.com/matatk/user-prefers-theme/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matatk/user-prefers-theme.git"
+  },
+  "license": "MIT",
+  "author": "Matthew Tylee Atkinson",
+  "main": "user-prefers-theme.js",
+  "scripts": {
+    "pretest": "eclint check && eslint .",
+    "test": "open index.html"
+  },
+  "devDependencies": {
+    "standard-version": "~7.0"
+  }
+}
